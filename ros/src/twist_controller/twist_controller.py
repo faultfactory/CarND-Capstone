@@ -8,7 +8,7 @@ ONE_MPH = 0.44704
 
 
 class Controller(object):
-    def __init__(self, vehicle_mass, fuel_capcity, brake_deadband, decel_limit, 
+    def __init__(self, vehicle_mass, fuel_capacity, brake_deadband, decel_limit, 
         accel_limit, wheel_radius, wheel_base, steer_ratio, max_lat_accel, max_steer_angle):
         
         self.yaw_controller = YawController(wheel_base, steer_ratio, 0.1, max_lat_accel, max_steer_angle)
@@ -63,5 +63,5 @@ class Controller(object):
             throttle = 0
             decel = max(vel_error,self.decel_limit)
             brake = abs(decel)*self.vehicle_mass*self.wheel_radius
-        
+            
         return throttle,brake,steering
