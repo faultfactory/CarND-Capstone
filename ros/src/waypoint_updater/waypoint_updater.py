@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import numpy as np
 import rospy
 from geometry_msgs.msg import PoseStamped
 from styx_msgs.msg import Lane, Waypoint
@@ -85,7 +85,6 @@ class WaypointUpdater(object):
         
     def pose_cb(self, msg):
         self.pose = msg
-        pass
 
     def waypoints_cb(self, waypoints):
         self.base_waypoints = waypoints
