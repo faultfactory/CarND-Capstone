@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import numpy as np
 import rospy
 from geometry_msgs.msg import PoseStamped
 from styx_msgs.msg import Lane, Waypoint
@@ -74,7 +74,7 @@ class WaypointUpdater(object):
         val = np.dot(cl_vect-prev_vect, pos_vect-cl_vect)
 
         if val>0:
-            closest_idx = (closest_idx+1) % len(self.waypoints_2d)
+1) % len(self.waypoints_2d)
         return closest_idx
     
     def publish_waypoints(self, closest_idx):
@@ -85,7 +85,6 @@ class WaypointUpdater(object):
         
     def pose_cb(self, msg):
         self.pose = msg
-        pass
 
     def waypoints_cb(self, waypoints):
         self.base_waypoints = waypoints
