@@ -43,16 +43,17 @@ class TLClassifier(object):
         """
         #TODO implement light color prediction
         image_in = pre_process(image)
-        graph_in = load_graph(graph_path)
+        graph_in = load_graph(PATH_FROZEN_GRAPH)
 
         
         with graph_in.as_default():
         	with tf.Session(graph=graph_in, config=config) as sess:
-        	"""
-            color_id = graph_in.get_tensor_by_name(???)
-            (???) = sess.run([???],
+        	score    = graph_in.get_tensor_by_name('detection_scores:0')
+            color_id = graph_in.get_tensor_by_name('detection_classes:0')
+            num = graph_in.get_tensor_by_name('num_detections:0')
+            (scores,color_ids,num) = sess.run([score,color_id,num],
             	          feed_dict = {color_tensor: image_in})
-            TrafficLight.state = ???
+            TrafficLight.state = colors[0]
             return TrafficLight.state
             """
 return TrafficLight.UNKNOWN
