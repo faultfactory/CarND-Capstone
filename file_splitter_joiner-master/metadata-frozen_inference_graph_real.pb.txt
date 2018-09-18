@@ -1,0 +1,3 @@
+input file = frozen_inference_graph_real.pb
+Number of Chunks = 3
+Chunk Size = 20000000
