@@ -11,6 +11,7 @@ import tf
 import cv2
 import yaml
 from scipy.spatial import KDTree
+import numpy as np
 
 STATE_COUNT_THRESHOLD = 3
 
@@ -125,7 +126,8 @@ class TLDetector(object):
             return False
 
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
-        cv_image = cv2.cvtColor(cv_image,COLOR_BGR2RGB)
+        cv_image = np.array(cv2.cvtColor(cv_image,cv2.COLOR_BGR2RGB)).reshape(1,600,800,3)
+        
 
         #Get classification
         return self.light_classifier.get_classification(cv_image)
