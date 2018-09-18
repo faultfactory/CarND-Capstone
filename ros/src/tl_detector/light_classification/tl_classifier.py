@@ -47,13 +47,14 @@ class TLClassifier(object):
 
         
         with graph_in.as_default():
-        	with tf.Session(graph=graph_in, config=config) as sess:
-        	score    = graph_in.get_tensor_by_name('detection_scores:0')
-            color_id = graph_in.get_tensor_by_name('detection_classes:0')
-            num = graph_in.get_tensor_by_name('num_detections:0')
-            (scores,color_ids,num) = sess.run([score,color_id,num],
-            	          feed_dict = {color_tensor: image_in})
-            TrafficLight.state = colors[0]
-            return TrafficLight.state
-            """
-return TrafficLight.UNKNOWN
+            with tf.Session(graph=graph_in, config=config) as sess:
+                score = graph_in.get_tensor_by_name('detection_scores:0')
+                color_id = graph_in.get_tensor_by_name('detection_classes:0')
+                num = graph_in.get_tensor_by_name('num_detections:0')
+                (scores,color_ids,num) = sess.run([score,color_id,num],
+                                                  feed_dict = {color_tensor: image_in})
+                TrafficLight.state = colors[0]
+            if score>0.2:
+                return TrafficLight.state
+            else:
+                return TrafficLight.UNKNOWN
