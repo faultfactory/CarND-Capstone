@@ -44,9 +44,9 @@ class TLClassifier(object):
 
     def load_image(self, image):
         (rows, cols, depth) = image.shape
-        img_r = np.array(image).reshape((rows, cols, 3))
-        img_e = np.expand_dims(img_r, axis=0)
-        return img_e
+        img_r = np.array(image).reshape(1,rows, cols, 3).astype(np.uint8)
+        #img_e = np.expand_dims(img_r, axis=0)
+        return img_r
 
 
     def get_classification(self, image):
