@@ -15,6 +15,21 @@ class TLClassifier(object):
         self.is_site = is_site
         self.light_state = None
         self.light_classes = ['Red','Green','Yellow', 'off']
+        
+        # path to graph
+        if self.is_site:
+            PATH_FROZEN_GRAPH = 'models/frozen_inference_graph_real.pb' #site
+            print('loading real model')
+        else:
+            PATH_FROZEN_GRAPH = 'models/frozen_inference_graph_sim.pb'
+            print('loading sim model')
+        
+        self.graph = self.load_graph(PATH_FROZEN_GRAPH)
+        config = tf.ConfigProto()
+        config.gpu_options.allow_growth = True
+        self.config = config
+            
+            
 
     def load_graph(self, graph_path):
         # load the protobuf file 
@@ -28,8 +43,8 @@ class TLClassifier(object):
         return graph
 
     def load_image(self, image):
-        (im_width, im_height) = image.size
-        img_r = np.array(image.getdata()).reshape((im_height, im_width, 3)).astype(np.uint8)
+        (rows, cols, depth) = image.shape
+        img_r = np.array(image).reshape((rows, cols, 3))
         img_e = np.expand_dims(img_r, axis=0)
         return img_e
 
@@ -43,35 +58,28 @@ class TLClassifier(object):
         """
         #TODO implement light color prediction
 
-        # path to graph
-        if self.is_site:
-            PATH_FROZEN_GRAPH = 'models/frozen_inference_graph_real.pb' #site
-            print('loading real model')
-        else:
-            PATH_FROZEN_GRAPH = 'models/frozen_inference_graph_sim.pb'
-            print('loading sim model')
+
                 
         # gpu config
-        config = tf.ConfigProto()
-        config.gpu_options.allow_growth = True
 
-        graph_in = self.load_graph(PATH_FROZEN_GRAPH)
 
         
-        with graph_in.as_default():
 
-            image_tensor = graph_in.get_tensor_by_name('image_tensor:0')
+        
+        with self.graph.as_default():
 
-            boxes = graph_in.get_tensor_by_name('detection_boxes:0')
-            scores = graph_in.get_tensor_by_name('detection_scores:0')
-            classes = graph_in.get_tensor_by_name('detection_classes:0')
-            num = graph_in.get_tensor_by_name('num_detections:0')
+            image_tensor = self.graph.get_tensor_by_name('image_tensor:0')
+
+            boxes = self.graph.get_tensor_by_name('detection_boxes:0')
+            scores = self.graph.get_tensor_by_name('detection_scores:0')
+            classes = self.graph.get_tensor_by_name('detection_classes:0')
+            num = self.graph.get_tensor_by_name('num_detections:0')
             
-            sess = tf.Session(graph=graph_in, config=config)
+            sess = tf.Session(graph=self.graph, config=self.config)
 
             (boxes, scores, classes, num) = sess.run(
                 [boxes, scores, classes, num],
-                feed_dict={image_tensor: image})
+                feed_dict={image_tensor: self.load_image(image)})
 
             classes = np.squeeze(classes).astype(np.int32)
             scores = np.squeeze(scores)
