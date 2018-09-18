@@ -28,7 +28,13 @@ class TLClassifier(object):
         config = tf.ConfigProto()
         config.gpu_options.allow_growth = True
         self.config = config
-            
+        boxes = self.graph.get_tensor_by_name('detection_boxes:0')
+        scores = self.graph.get_tensor_by_name('detection_scores:0')
+        classes = self.graph.get_tensor_by_name('detection_classes:0')
+        num = self.graph.get_tensor_by_name('num_detections:0')
+        
+        self.sess_inputs=[boxes, scores, classes, num];
+        self.sess = tf.Session(graph=self.graph, config=self.config)
             
 
     def load_graph(self, graph_path):
@@ -70,15 +76,8 @@ class TLClassifier(object):
 
             image_tensor = self.graph.get_tensor_by_name('image_tensor:0')
 
-            boxes = self.graph.get_tensor_by_name('detection_boxes:0')
-            scores = self.graph.get_tensor_by_name('detection_scores:0')
-            classes = self.graph.get_tensor_by_name('detection_classes:0')
-            num = self.graph.get_tensor_by_name('num_detections:0')
-            
-            sess = tf.Session(graph=self.graph, config=self.config)
-
-            (boxes, scores, classes, num) = sess.run(
-                [boxes, scores, classes, num],
+            (boxes, scores, classes, num) = self.sess.run(
+                self.sess_inputs,
                 feed_dict={image_tensor: self.load_image(image)})
 
             classes = np.squeeze(classes).astype(np.int32)
