@@ -1,4 +1,5 @@
 
+from styx_msgs.msg import TrafficLight
 import tensorflow as tf 
 import numpy as np 
 import os
@@ -14,7 +15,7 @@ class TLClassifier(object):
         
         self.is_site = is_site
         self.light_state = None
-        self.light_classes = ['Red','Green','Yellow', 'off']
+        self.light_classes = ['Green','Red','Yellow', 'off']
         
         # path to graph
         if self.is_site:
@@ -49,9 +50,9 @@ class TLClassifier(object):
         return graph
 
     def load_image(self, image):
-        (rows, cols, depth) = image.shape
-        img_r = np.array(image).reshape(1,rows, cols, 3).astype(np.uint8)
-        #img_e = np.expand_dims(img_r, axis=0)
+#         (rows, cols, depth) = image.shape
+#         img_r = np.array(image).reshape(1,rows, cols, 3).astype(np.uint8)
+        img_r = np.expand_dims(image, axis=0)
         return img_r
 
 
@@ -85,40 +86,24 @@ class TLClassifier(object):
 
             # understanding model
             #print(scores)
-            pct_scores = [i * 100 for i in scores]
-            #print(pct_scores)
-            ron_scores = [round(i,2) for i in pct_scores]
-            print(ron_scores)
+#             pct_scores = [i * 100 for i in scores]
+#             #print(pct_scores)
+#             ron_scores = [round(i,2) for i in pct_scores]
+#             print(ron_scores)
             
-            print(classes)
-            idx = classes[0] # classes ==> 1-Red; 2-Green; 3-Yellow; 4-off
+#             print(classes)
+            idx = classes[0] # classes ==> 1-Green; 2-Red; 3-Yellow; 4-off
 
-            self.light_state = self.light_classes[idx-1] # idx-1 ==> 0-Red; 1-Green; 2-Yellow; 3-off
-
+            self.light_state = self.light_classes[idx-1] # ==>0-Green; 1-Red; 2-Yellow; 3-off
+                        #Message for TrafficLight
+            tl_color = self.light_state
+            print(tl_color)
+            if tl_color == 'Green':
+                self.light_state = TrafficLight.GREEN 
+            elif tl_color == 'Red':
+            	self.light_state = TrafficLight.RED
+            elif tl_color == 'Yellow':
+                self.light_state = TrafficLight.YELLOW 
+            
             return self.light_state
 
-if __name__ == '__main__':
-    mode = True #is_site 0-sim 1-real
-    #mode = False
-    if mode:
-        msg = 'Real/Site'
-    else:
-        msg = 'Sim'
-
-    tlc = TLClassifier(mode)
-    print(msg, 'Testing')
-    
-    # test images for site/real testing 
-    TEST_IMGS = glob(os.path.join('test_images/', '*.jpg'))
-
-    for inum, img_path in enumerate(TEST_IMGS):
-        #random.shuffle(TEST_IMGS)
-        image = Image.open(img_path)
-        image_in = tlc.load_image(image)
-        image_in_cp = np.copy(image_in)
-
-        tl_state = tlc.get_classification(image_in_cp)
-        print('In Image', inum, 'Signal Is', tl_state)
-
-        #if inum == 0:
-           #break
