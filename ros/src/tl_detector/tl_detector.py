@@ -126,7 +126,8 @@ class TLDetector(object):
             return False
 
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image)
-        cv_image = cv2.cvtColor(cv_image,cv2.COLOR_BGR2RGB)
+        #cv_image = cv2.cvtColor(cv_image,cv2.COLOR_BGR2RGB)
+        cv_image = cv2.resize(cv_image,(150,200))
         
 
         #Get classification
