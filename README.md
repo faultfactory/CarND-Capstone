@@ -2,15 +2,15 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 
 Team Members for this submission: 
 
-- Michael Palazzolo <mrpalazz@gmail.com>
+- Michael Palazzolo 
 
-- Christopher Palazzolo <cpalazzolo.htp@gmail.com>
+- Christopher Palazzolo 
 
-- Preeti Chauhan <preetichauhan.scu@gmail.com>
+- Preeti Chauhan
 
-- Jesse Jongebloed <jjongebl@gmail.com>
+- Jesse Jongebloed 
 
-- Zhongzhou Yang <zzyang21@gmail.com>
+- Zhongzhou Yang
 
 
 
